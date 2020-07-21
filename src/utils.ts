@@ -10,6 +10,9 @@ import {
     IntrospectionField,
     IntrospectionInputValue
 } from 'graphql';
+import {
+    camelCase
+} from 'lodash';
 
 /**
  * Send introspection query to a graphql schema
@@ -41,7 +44,7 @@ function klawSync(path: string, filterRegex: RegExp, fileNames: string[] = []) {
 }
 
 export const introspectSchemaViaLocalFile = async (path: string): Promise<IntrospectionQuery> => {
-    const files = klawSync(path, /\.(graphql|gql)$/);
+    const files = klawSync(path, /\.(graphql|gql|graphqls)$/);
     const allTypeDefs = files.map(filePath => fs.readFileSync(filePath, 'utf-8')).join('\n');
     return await introspectSchemaStr(allTypeDefs);
 };
@@ -186,4 +189,8 @@ export const createFieldRef = (
 
 export const toUppercaseFirst = (value: string): string => {
     return value.charAt(0).toUpperCase() + value.slice(1);
+};
+
+export const pascalCase = (value: string): string => {
+    return toUppercaseFirst(camelCase(value));
 };
